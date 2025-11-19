@@ -1,0 +1,233 @@
+/**
+ * AI Assistant Plugin Styles
+ */
+
+/* AI Suggest Button */
+.ai-suggest-btn {
+    background-color: #5B9BD5;
+    border-color: #5B9BD5;
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.ai-suggest-btn:hover {
+    background-color: #4A8AC4;
+    border-color: #4A8AC4;
+}
+
+.ai-suggest-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.ai-suggest-btn .icon-magic:before {
+    content: "✨";
+    margin-right: 5px;
+}
+
+/* Loading Indicator */
+#ai-loading {
+    color: #666;
+    font-style: italic;
+}
+
+#ai-loading .icon-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Suggestions Panel */
+.ai-suggestions-panel {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+.ai-suggestion-box {
+    background: white;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Confidence Indicator */
+.ai-confidence {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.ai-confidence-high {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.ai-confidence-medium {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.ai-confidence-low {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Template Info */
+.ai-template-info h4 {
+    margin: 10px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.ai-reasoning {
+    color: #666;
+    font-size: 13px;
+    font-style: italic;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #f0f8ff;
+    border-left: 3px solid #5B9BD5;
+}
+
+.ai-template-preview {
+    background-color: #fafafa;
+    padding: 12px;
+    border-radius: 4px;
+    margin: 10px 0;
+    font-size: 13px;
+    color: #555;
+    border: 1px solid #e0e0e0;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+/* Actions */
+.ai-actions {
+    margin: 15px 0;
+}
+
+.ai-use-template {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.ai-use-template:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+/* Alternatives */
+.ai-alternatives {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.ai-alternatives p {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.ai-alternatives ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ai-alternatives li {
+    margin: 5px 0;
+}
+
+.ai-alternative-template {
+    color: #5B9BD5;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.ai-alternative-template:hover {
+    text-decoration: underline;
+    color: #4A8AC4;
+}
+
+/* Modifications */
+.ai-modifications {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #fffbf0;
+    border-left: 3px solid #ffc107;
+    border-radius: 4px;
+}
+
+.ai-modifications p {
+    margin: 5px 0;
+    font-size: 13px;
+}
+
+.ai-modifications strong {
+    color: #856404;
+}
+
+/* Alerts */
+.alert {
+    padding: 12px 15px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Container */
+#ai-assistant-container {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .ai-suggest-btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .ai-suggestion-box {
+        padding: 10px;
+    }
+    
+    .ai-template-preview {
+        max-height: 100px;
+    }
+}
