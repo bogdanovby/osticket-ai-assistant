@@ -3,6 +3,10 @@
 ## Overview
 The AI Assistant plugin integrates OpenAI's GPT models into osTicket to assist support agents. It analyzes incoming ticket content and suggests the most appropriate "Canned Response" from the system's database, significantly reducing response time.
 
+![AI Assistant in Action](docs/images/ostickets.png)
+
+*Screenshot showing the AI Assistant suggesting a response template with 70% confidence for a customer ticket.*
+
 ## Features
 - **Automated Analysis**: Analyzes ticket subject, body, and thread history using OpenAI.
 - **Smart Matching**: Matches tickets with existing Canned Responses based on semantic meaning, not just keywords.
@@ -59,9 +63,6 @@ Go to **Manage -> Plugins -> AI Assistant -> Config**.
 - **500 Error**: Check Apache error logs. Ensure file permissions are correct.
 - **401 Error**: Incorrect API Key. Check whitespace or validity of the key.
 - **No canned responses**: Ensure you have active Canned Responses in the Knowledgebase.
-
-## License
-MIT License
 
 ## Authors
 - **Pavel Bahdanau**
