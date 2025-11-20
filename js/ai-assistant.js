@@ -170,31 +170,59 @@
         },
         
         insertContent: function(content) {
-            // Find Redactor instance
-            var $redactor = $('.richtext').filter(':visible');
+            // Find textarea with Redactor instance
+            var $textarea = $('#response');
             
-            if ($redactor.length > 0 && typeof $.fn.redactor !== 'undefined') {
-                // Try standard redactor API
+            if ($textarea.length > 0 && typeof $.fn.redactor !== 'undefined' && $textarea.data('redactor')) {
+                // Use Redactor 3.x API
                 try {
-                    $redactor.redactor('insert.html', content);
+                    var redactor = $textarea.data('redactor');
+                    
+                    // Use insertHtml to append content at cursor position (like native canned responses)
+                    if (redactor && redactor.insertion && typeof redactor.insertion.insertHtml === 'function') {
+                        redactor.insertion.insertHtml(content);
+                        console.log('AI Assistant: Content inserted via Redactor insertion.insertHtml()');
+                    }
+                    // Fallback: append to existing content
+                    else if (redactor && redactor.source && typeof redactor.source.get === 'function' && typeof redactor.source.set === 'function') {
+                        var existing = redactor.source.get();
+                        redactor.source.set(existing + content);
+                        console.log('AI Assistant: Content appended via Redactor source.set()');
+                    }
+                    // Direct textarea fallback - append
+                    else {
+                        var existing = $textarea.val();
+                        $textarea.val(existing + content);
+                        $textarea.trigger('change');
+                        console.log('AI Assistant: Content appended via textarea');
+                    }
                 } catch(e) {
-                    // Fallback for older/newer versions
-                    $redactor.redactor('set', content); 
+                    console.error('AI Assistant: Redactor API error', e);
+                    // Direct textarea fallback - append
+                    var existing = $textarea.val();
+                    $textarea.val(existing + content);
+                    $textarea.trigger('change');
                 }
             } else {
-                // Plain textarea fallback
-                var $textarea = $('#response');
+                // Plain textarea fallback - append
                 if ($textarea.length > 0) {
-                    $textarea.val(content);
+                    var existing = $textarea.val();
+                    $textarea.val(existing + content);
+                    $textarea.trigger('change');
+                    console.log('AI Assistant: Content appended via textarea');
                 } else {
                     alert('Could not find response editor');
                 }
             }
             
             $('#ai-suggestions').slideUp();
-            $('html, body').animate({
-                scrollTop: $('#response').offset().top - 100
-            }, 500);
+            
+            // Scroll to editor
+            if ($textarea.length > 0) {
+                $('html, body').animate({
+                    scrollTop: $textarea.offset().top - 100
+                }, 500);
+            }
         },
         
         getTicketId: function() {
