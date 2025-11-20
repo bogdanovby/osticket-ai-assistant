@@ -215,14 +215,13 @@
                 }
             }
             
-            $('#ai-suggestions').slideUp();
+            // Закрываем блок без прокрутки - фиксируем позицию сразу
+            var $suggestions = $('#ai-suggestions');
+            var scrollPos = $(window).scrollTop();
             
-            // Scroll to editor
-            if ($textarea.length > 0) {
-                $('html, body').animate({
-                    scrollTop: $textarea.offset().top - 100
-                }, 500);
-            }
+            // Используем простое скрытие без анимации чтобы избежать прокрутки
+            $suggestions.hide();
+            $(window).scrollTop(scrollPos);
         },
         
         getTicketId: function() {
