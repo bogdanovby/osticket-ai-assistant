@@ -85,5 +85,3 @@ class AiAssistantConfig extends PluginConfig {
         );
     }
 }
-
-?>

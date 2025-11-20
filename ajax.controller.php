@@ -13,7 +13,7 @@ class AiAssistantAjaxController extends AjaxController {
         return true;
     }
     
-    private function getConfig() {
+    private function getConfig(): \AiAssistantConfig {
         $plugin = PluginManager::getInstance()->getPlugin('osticket:ai-assistant');
         if (!$plugin)
             throw new Exception('Plugin not found');
