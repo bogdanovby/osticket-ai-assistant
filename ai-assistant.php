@@ -173,12 +173,12 @@ class AiAssistantPlugin extends Plugin {
         Signal::connect('ajax.scp', array($this, 'registerAjax'));
     }
     
-    function registerAjax($dispatcher) {
+    function registerAjax($dispatcher, $data=null) {
         $dispatcher->append(
-            url('^/ai-assistant/suggest', 'ai_assistant_handle_suggest')
+            url_post('^/ai-assistant/suggest', 'ai_assistant_handle_suggest')
         );
         $dispatcher->append(
-            url('^/ai-assistant/get-template', 'ai_assistant_handle_template')
+            url_post('^/ai-assistant/get-template', 'ai_assistant_handle_template')
         );
     }
     
