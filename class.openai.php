@@ -6,13 +6,13 @@
  */
 class OpenAIClient {
     
-    private $api_key;
-    private $model;
-    private $timeout;
-    private $api_url = 'https://api.openai.com/v1/chat/completions';
-    private $enable_logging;
+    private ?string $api_key;
+    private ?string $model;
+    private ?int $timeout;
+    private string $api_url = 'https://api.openai.com/v1/chat/completions';
+    private ?bool $enable_logging;
     
-    public function __construct($api_key, $model = 'gpt-4o-mini', $timeout = 30, $enable_logging = false) {
+    public function __construct(?string $api_key, ?string $model = 'gpt-4o-mini', ?int $timeout = 30, ?bool $enable_logging = false) {
         $this->api_key = trim($api_key);
         $this->model = $model;
         $this->timeout = $timeout;

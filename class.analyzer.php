@@ -7,10 +7,10 @@
  */
 class TicketAnalyzer {
     
-    private $openai;
-    private $config;
+    private OpenAIClient $openai;
+    private AiAssistantConfig $config;
     
-    public function __construct($config) {
+    public function __construct(\AiAssistantConfig  $config) {
         $this->config = $config;
         $this->openai = new OpenAIClient(
             $config->get('api_key'),
