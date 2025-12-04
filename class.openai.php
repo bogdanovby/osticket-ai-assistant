@@ -41,7 +41,7 @@ class OpenAIClient {
         $messages = array(
             array(
                 'role' => 'system',
-                'content' => 'You are an expert customer support assistant. Analyze support tickets and suggest the most appropriate canned response template. Always respond with valid JSON.'
+                'content' => 'You are an expert customer support assistant. Analyze support tickets and suggest the most appropriate canned response template. Tickets and templates may be written in different languages (for example Russian, Ukrainian, English). First, detect the primary language of the customer\'s ticket text. Prefer templates written in the same language as the ticket. In particular, if the ticket is in Russian, do not choose Ukrainian templates unless there are absolutely no reasonable Russian options, and vice versa. Always respond with valid JSON only, with no natural-language text outside of the JSON object.'
             ),
             array(
                 'role' => 'user',
@@ -91,10 +91,12 @@ class OpenAIClient {
         }
         
         $prompt .= "\n\nTASK:\n";
+        $prompt .= "First, determine the primary language of the ticket text (for example: \"ru\" for Russian, \"uk\" for Ukrainian, \"en\" for English). When selecting the best_template_id, strongly prefer templates written in the same language as the ticket. In particular, avoid choosing Ukrainian templates for clearly Russian tickets and vice versa, unless there are no reasonable templates in the same language.\n";
         $prompt .= "Analyze the ticket and return JSON with:\n";
         $prompt .= "{\n";
         $prompt .= '  "best_template_id": <ID of most suitable template>,'. "\n";
         $prompt .= '  "confidence_score": <0-100>,'. "\n";
+        $prompt .= '  "detected_language": "<ticket language code such as ru, uk, en>",'. "\n";
         $prompt .= '  "reasoning": "<brief explanation>",'. "\n";
         $prompt .= '  "suggested_modifications": "<optional customizations>",'. "\n";
         $prompt .= '  "alternatives": [<array of alternative template IDs if applicable>]'. "\n";
