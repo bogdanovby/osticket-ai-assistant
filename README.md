@@ -11,6 +11,7 @@ The AI Assistant plugin integrates OpenAI's GPT models into osTicket to assist s
 - **Automated Analysis**: Analyzes ticket subject, body, and thread history using OpenAI.
 - **Smart Matching**: Matches tickets with existing Canned Responses based on semantic meaning, not just keywords.
 - **Context Aware**: Considers ticket priority and department.
+- **Language-Aware**: Detects the ticket language and prefers canned responses written in the same language (for example, distinguishing Russian and Ukrainian).
 - **One-Click Insertion**: Agents can preview the suggested response and insert it into the reply editor with a single click.
 - **Configurable**: Adjustable confidence threshold, max templates limit, and model selection (GPT-4o, GPT-3.5, etc.).
 

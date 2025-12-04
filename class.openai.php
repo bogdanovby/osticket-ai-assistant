@@ -41,7 +41,7 @@ class OpenAIClient {
         $messages = array(
             array(
                 'role' => 'system',
-                'content' => 'You are an expert customer support assistant. Analyze support tickets and suggest the most appropriate canned response template. Always respond with valid JSON.'
+                'content' => 'You are an expert customer support assistant. Analyze support tickets and suggest the most appropriate canned response template. Tickets and templates may be written in different languages (for example Russian, Ukrainian, English). First, detect the primary language of the customer\'s ticket text. Prefer templates written in the same language as the ticket. In particular, if the ticket is in Russian, do not choose Ukrainian templates unless there are absolutely no reasonable Russian options, and vice versa. Always respond with valid JSON only, with no natural-language text outside of the JSON object.'
             ),
             array(
                 'role' => 'user',
@@ -91,10 +91,12 @@ class OpenAIClient {
         }
         
         $prompt .= "\n\nTASK:\n";
+        $prompt .= "First, determine the primary language of the ticket text (for example: \"ru\" for Russian, \"uk\" for Ukrainian, \"en\" for English). When selecting the best_template_id, strongly prefer templates written in the same language as the ticket. In particular, avoid choosing Ukrainian templates for clearly Russian tickets and vice versa, unless there are no reasonable templates in the same language.\n";
         $prompt .= "Analyze the ticket and return JSON with:\n";
         $prompt .= "{\n";
         $prompt .= '  "best_template_id": <ID of most suitable template>,'. "\n";
         $prompt .= '  "confidence_score": <0-100>,'. "\n";
+        $prompt .= '  "detected_language": "<ticket language code such as ru, uk, en>",'. "\n";
         $prompt .= '  "reasoning": "<brief explanation>",'. "\n";
         $prompt .= '  "suggested_modifications": "<optional customizations>",'. "\n";
         $prompt .= '  "alternatives": [<array of alternative template IDs if applicable>]'. "\n";
@@ -114,7 +116,23 @@ class OpenAIClient {
             'response_format' => array('type' => 'json_object')
         );
         
-        $json_data = json_encode($data);
+        // Encode payload as JSON, handling invalid UTF-8 safely
+        $json_options = JSON_UNESCAPED_UNICODE;
+        if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+            $json_options |= JSON_INVALID_UTF8_SUBSTITUTE;
+        }
+        $json_data = json_encode($data, $json_options);
+        
+        if ($json_data === false || json_last_error() !== JSON_ERROR_NONE) {
+            $error_msg = 'Failed to encode request as JSON: ' . json_last_error_msg();
+            if ($this->enable_logging) {
+                error_log('AI Assistant - JSON encode error: ' . $error_msg . ' | Data snapshot: ' . print_r($data, true));
+            }
+            return array(
+                'success' => false,
+                'error' => $error_msg
+            );
+        }
         
         if ($this->enable_logging) {
             error_log("AI Assistant - API Request: " . $json_data);
@@ -136,6 +154,9 @@ class OpenAIClient {
         curl_close($ch);
         
         if ($curl_error) {
+            if ($this->enable_logging) {
+                error_log('AI Assistant - CURL Error: ' . $curl_error);
+            }
             return array(
                 'success' => false,
                 'error' => 'CURL Error: ' . $curl_error
@@ -143,6 +164,9 @@ class OpenAIClient {
         }
         
         if ($http_code !== 200) {
+            if ($this->enable_logging) {
+                error_log('AI Assistant - API Error HTTP ' . $http_code . ': ' . $response);
+            }
             $error_data = json_decode($response, true);
             $error_msg = isset($error_data['error']['message']) ? $error_data['error']['message'] : 'Unknown error';
             return array(
