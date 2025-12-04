@@ -114,7 +114,23 @@ class OpenAIClient {
             'response_format' => array('type' => 'json_object')
         );
         
-        $json_data = json_encode($data);
+        // Encode payload as JSON, handling invalid UTF-8 safely
+        $json_options = JSON_UNESCAPED_UNICODE;
+        if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+            $json_options |= JSON_INVALID_UTF8_SUBSTITUTE;
+        }
+        $json_data = json_encode($data, $json_options);
+        
+        if ($json_data === false || json_last_error() !== JSON_ERROR_NONE) {
+            $error_msg = 'Failed to encode request as JSON: ' . json_last_error_msg();
+            if ($this->enable_logging) {
+                error_log('AI Assistant - JSON encode error: ' . $error_msg . ' | Data snapshot: ' . print_r($data, true));
+            }
+            return array(
+                'success' => false,
+                'error' => $error_msg
+            );
+        }
         
         if ($this->enable_logging) {
             error_log("AI Assistant - API Request: " . $json_data);
@@ -136,6 +152,9 @@ class OpenAIClient {
         curl_close($ch);
         
         if ($curl_error) {
+            if ($this->enable_logging) {
+                error_log('AI Assistant - CURL Error: ' . $curl_error);
+            }
             return array(
                 'success' => false,
                 'error' => 'CURL Error: ' . $curl_error
@@ -143,6 +162,9 @@ class OpenAIClient {
         }
         
         if ($http_code !== 200) {
+            if ($this->enable_logging) {
+                error_log('AI Assistant - API Error HTTP ' . $http_code . ': ' . $response);
+            }
             $error_data = json_decode($response, true);
             $error_msg = isset($error_data['error']['message']) ? $error_data['error']['message'] : 'Unknown error';
             return array(
