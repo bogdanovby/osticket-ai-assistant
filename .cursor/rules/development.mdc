@@ -1,0 +1,17 @@
+---
+alwaysApply: true
+---
+
+## Plugin `osticket-ai-assistant`
+
+- **Purpose**: The AI assistant helps agents analyze ticket content and draft responses using an external AI API (OpenAI or compatible).
+- **Where to apply these rules**: any changes under `include/plugins/osticket-ai-assistant/*`, including PHP classes, JS/CSS, and configuration.
+- **What must be preserved**:
+  - Do not break osTicket extension points (hooks, plugin interfaces, method signatures called by the core).
+  - Be careful when changing integration with the AI provider: do not hardcode API keys, do not log secrets, respect timeouts and rate/usage limits.
+  - Avoid heavy synchronous calls that can block the UI response; prefer deferred/asynchronous processing where possible.
+- **Integrations and dependencies**: when changing interaction with the core (`include/`, `scp/`),
+  ensure other plugins are not broken and follow the global rules from the root `.cursor/rules.md`.
+- **Stack**:
+    - PHP 8.2
+    - osTicket: 1.18
