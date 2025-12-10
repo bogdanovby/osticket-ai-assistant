@@ -5,20 +5,27 @@
  * Ticket Analyzer
  * Analyzes tickets and finds best matching canned responses using AI
  */
-class TicketAnalyzer {
+class OsticketAIAssistantTicketAnalyzer {
     
-    private OsticketAIAssistantAPIClient $apiClient;
+    private ?OsticketAIAssistantAPIClient $apiClient = null;
     private AiAssistantConfig $config;
     
     public function __construct(\AiAssistantConfig  $config) {
         $this->config = $config;
-        $this->apiClient = new OsticketAIAssistantAPIClient(
-            $config->get('api_key'),
-            $config->get('model'),
-            $config->get('api_url'),
-            $config->get('timeout'),
-            $config->get('enable_logging')
-        );
+        
+        $api_key = $config->get('api_key');
+        $model = $config->get('model');
+        $api_url = $config->get('api_url');
+        
+        if ($api_key && $model && $api_url) {
+            $this->apiClient = new OsticketAIAssistantAPIClient(
+                $api_key,
+                $model,
+                $api_url,
+                $config->get('timeout'),
+                $config->get('enable_logging')
+            );
+        }
     }
     
     /**
@@ -49,11 +56,18 @@ class TicketAnalyzer {
         }
         
         // Limit templates if configured
-        $max_templates = intval($this->config->get('max_templates'));
+        $max_templates = (int) $this->config->get('max_templates', 0);
         if ($max_templates > 0 && count($templates) > $max_templates) {
             $templates = array_slice($templates, 0, $max_templates);
         }
-        
+
+        if (!$this->apiClient) {
+            return array(
+                'success' => false,
+                'error' => 'API client not configured. Please check plugin settings (API Key, Model, API URL).'
+            );
+        }
+
         // Use AI to find best match
         $result = $this->apiClient->findBestTemplate($ticket_data, $templates);
         
@@ -62,7 +76,7 @@ class TicketAnalyzer {
         }
         
         // Check confidence threshold
-        $min_confidence = intval($this->config->get('min_confidence'));
+        $min_confidence = (int)$this->config->get('min_confidence', 0);
         if ($result['confidence'] < $min_confidence) {
             return array(
                 'success' => false,
@@ -81,7 +95,7 @@ class TicketAnalyzer {
      * @param int $ticket_id
      * @return array|null Ticket data
      */
-    public function getTicketContext($ticket_id) {
+    private function getTicketContext($ticket_id) {
         $ticket = Ticket::lookup($ticket_id);
         
         if (!$ticket) {
@@ -111,7 +125,7 @@ class TicketAnalyzer {
                     $messages[] = strip_tags($body->getClean());
                 }
             }
-            
+
             // First message is the main content
             if (!empty($messages)) {
                 $data['content'] = $messages[0];
@@ -122,17 +136,17 @@ class TicketAnalyzer {
                 }
             }
         }
-        
+
         return $data;
     }
-    
+
     /**
      * Get all canned responses for a department
      *
      * @param int|null $dept_id Department ID
      * @return array Array of canned responses
      */
-    public function getCannedResponses($dept_id = null) {
+    private function getCannedResponses($dept_id = null) {
         $templates = array();
         
         // Get all active canned responses
@@ -156,7 +170,7 @@ class TicketAnalyzer {
         
         return $templates;
     }
-    
+
     /**
      * Clean HTML content and extract text
      */
