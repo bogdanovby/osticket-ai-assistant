@@ -3,30 +3,87 @@
 require_once(INCLUDE_DIR . 'class.plugin.php');
 require_once(INCLUDE_DIR . 'class.forms.php');
 
+/**
+ * Custom field for Model selection that switches between dropdown and textbox
+ */
+class AIAssistantModelField extends TextboxField {
+    static $widget = 'AIAssistantModelWidget';
+}
+
+class AIAssistantModelWidget extends Widget {
+    function render($options=array()) {
+        $name = $this->name;
+        $value = $this->value;
+        $config = $this->field->getConfiguration();
+        
+        // OpenAI models list
+        $models = array(
+            'gpt-4o' => 'GPT-4o (Most capable, expensive)',
+            'gpt-4o-mini' => 'GPT-4o Mini (Fast and affordable)',
+            'gpt-4-turbo' => 'GPT-4 Turbo',
+            'gpt-3.5-turbo' => 'GPT-3.5 Turbo (Cheapest)'
+        );
+        ?>
+        <input type="hidden" name="<?php echo $name; ?>" id="model_value" value="<?php echo Format::htmlchars($value); ?>" />
+        
+        <!-- Dropdown for OpenAI -->
+        <select id="model_select" class="model-select-dropdown" style="width: 350px;">
+            <?php foreach ($models as $model_id => $model_name): ?>
+                <option value="<?php echo $model_id; ?>" <?php if ($value === $model_id) echo 'selected="selected"'; ?>>
+                    <?php echo Format::htmlchars($model_name); ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        
+        <!-- Textbox for Custom -->
+        <input type="text" id="model_text" class="model-text-input" 
+               value="<?php echo Format::htmlchars($value); ?>" 
+               placeholder="Enter model name (e.g., gpt-4o-mini)"
+               style="width: 350px; padding: 5px;" />
+
+        <script type="text/javascript"><?php readfile(__DIR__ . '/js/config.js'); ?></script>
+        <?php
+    }
+}
+
 class AiAssistantConfig extends PluginConfig {
     
     function getOptions() {
         return array(
+            'api_provider' => new ChoiceField(array(
+                'label' => __('API Provider'),
+                'default' => 'openai',
+                'choices' => array(
+                    'openai' => 'Open AI',
+                    'custom' => 'Custom'
+                ),
+                'hint' => __('Choose API provider type')
+            )),
             'api_key' => new TextboxField(array(
-                'label' => __('OpenAI API Key'),
+                'label' => __('API Key'),
                 'required' => true,
                 'configuration' => array(
                     'size' => 60,
                     'length' => 500,
                     'placeholder' => 'sk-...'
                 ),
-                'hint' => __('Your OpenAI API key. Get it from https://platform.openai.com/api-keys')
+                'hint' => __('Your API key')
             )),
-            'model' => new ChoiceField(array(
-                'label' => __('OpenAI Model'),
-                'default' => 'gpt-4o-mini',
-                'choices' => array(
-                    'gpt-4o' => 'GPT-4o (Most capable, expensive)',
-                    'gpt-4o-mini' => 'GPT-4o Mini (Fast and affordable)',
-                    'gpt-4-turbo' => 'GPT-4 Turbo',
-                    'gpt-3.5-turbo' => 'GPT-3.5 Turbo (Cheapest)'
+            'api_url' => new TextboxField(array(
+                'label' => __('API URL'),
+                'required' => false,
+                'configuration' => array(
+                    'size' => 60,
+                    'length' => 500,
+                    'placeholder' => 'https://api.example.com/v1/chat/completions'
                 ),
-                'hint' => __('Choose the model to use for analysis')
+                'hint' => __('Custom API endpoint URL (compatible with OpenAI)')
+            )),
+            'model' => new AIAssistantModelField(array(
+                'label' => __('Model Name'),
+                'default' => 'gpt-4o-mini',
+                'required' => true,
+                'hint' => __('Select or enter the model name to use for analysis')
             )),
             'auto_suggest' => new BooleanField(array(
                 'label' => __('Auto-suggest on ticket view'),
@@ -81,7 +138,24 @@ class AiAssistantConfig extends PluginConfig {
     function getFormOptions() {
         return array(
             'title' => __('AI Assistant Configuration'),
-            'instructions' => __('Configure OpenAI integration for intelligent ticket response suggestions.')
+            'instructions' => __('Configure AI API integration for intelligent ticket response suggestions.')
         );
+    }
+    
+    function pre_save(&$config, &$errors) {
+
+        $result = true;
+        if ('openai' === $config['api_provider']) {
+            // For OpenAI provider, set default API URL
+            $config['api_url'] = 'https://api.openai.com/v1/chat/completions';
+        }
+
+        // Validate API URL
+        if (empty($config['api_url'])) {
+            $errors['api_url'] = __('API URL is required for Custom provider');
+            $result = false;
+        }
+
+        return $result;
     }
 }

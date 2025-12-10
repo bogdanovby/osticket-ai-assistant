@@ -7,14 +7,15 @@
  */
 class TicketAnalyzer {
     
-    private OpenAIClient $openai;
+    private OsticketAIAssistantAPIClient $apiClient;
     private AiAssistantConfig $config;
     
     public function __construct(\AiAssistantConfig  $config) {
         $this->config = $config;
-        $this->openai = new OpenAIClient(
+        $this->apiClient = new OsticketAIAssistantAPIClient(
             $config->get('api_key'),
             $config->get('model'),
+            $config->get('api_url'),
             $config->get('timeout'),
             $config->get('enable_logging')
         );
@@ -54,7 +55,7 @@ class TicketAnalyzer {
         }
         
         // Use AI to find best match
-        $result = $this->openai->findBestTemplate($ticket_data, $templates);
+        $result = $this->apiClient->findBestTemplate($ticket_data, $templates);
         
         if (!$result['success']) {
             return $result;

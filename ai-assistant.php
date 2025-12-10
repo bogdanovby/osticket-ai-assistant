@@ -5,7 +5,7 @@ require_once(INCLUDE_DIR . 'class.signal.php');
 require_once(INCLUDE_DIR . 'class.dispatcher.php');
 require_once(INCLUDE_DIR . 'class.json.php');
 require_once('config.php');
-require_once('class.openai.php');
+require_once('class.api-client.php');
 
 // --- ГЛОБАЛЬНЫЕ ФУНКЦИИ-ОБРАБОТЧИКИ ---
 
