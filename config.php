@@ -18,10 +18,30 @@ class AIAssistantModelWidget extends Widget {
         
         // OpenAI models list
         $models = array(
-            'gpt-4o' => 'GPT-4o (Most capable, expensive)',
+            // GPT-5 series (latest)
+            'gpt-5.2' => 'GPT-5.2 (Latest, improved reasoning)',
+            'gpt-5.1' => 'GPT-5.1 (Coding & agentic tasks)',
+            'gpt-5.1-codex' => 'GPT-5.1 Codex (Optimized for code)',
+            'gpt-5.1-codex-mini' => 'GPT-5.1 Codex Mini',
+            'gpt-5.1-codex-max' => 'GPT-5.1 Codex Max (Project-scale coding)',
+            'gpt-5-mini' => 'GPT-5 Mini (Fast, 400K context)',
+            'gpt-5-nano' => 'GPT-5 Nano (Fastest, cheapest)',
+            // Reasoning models (o-series) - think longer before responding
+            'o3' => 'o3 (Most advanced reasoning)',
+            'o3-mini' => 'o3-mini (Cost-efficient reasoning)',
+            'o4-mini' => 'o4-mini (Latest compact reasoning)',
+            'o1' => 'o1 (Extended reasoning)',
+            'o1-mini' => 'o1-mini (Compact reasoning)',
+            // GPT-4.1 series - improved coding & long context
+            'gpt-4.1' => 'GPT-4.1 (Best for coding, 1M context)',
+            'gpt-4.1-mini' => 'GPT-4.1 Mini (Balanced)',
+            'gpt-4.1-nano' => 'GPT-4.1 Nano (Fastest)',
+            // GPT-4o series - multimodal
+            'gpt-4o' => 'GPT-4o (Multimodal, capable)',
             'gpt-4o-mini' => 'GPT-4o Mini (Fast and affordable)',
-            'gpt-4-turbo' => 'GPT-4 Turbo',
-            'gpt-3.5-turbo' => 'GPT-3.5 Turbo (Cheapest)'
+            // Legacy models
+            'gpt-4-turbo' => 'GPT-4 Turbo (Legacy)',
+            'gpt-3.5-turbo' => 'GPT-3.5 Turbo (Cheapest, legacy)'
         );
         ?>
         <input type="hidden" name="<?php echo $name; ?>" id="model_value" value="<?php echo Format::htmlchars($value); ?>" />
