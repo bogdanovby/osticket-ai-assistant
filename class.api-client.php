@@ -1,22 +1,25 @@
 <?php
 
 /**
- * OpenAI API Client
- * Handles communication with OpenAI ChatGPT API
+ * AI API Client
+ * Handles communication with OpenAI-compatible API
  */
-class OpenAIClient {
+class OsticketAIAssistantAPIClient {
     
-    private ?string $api_key;
-    private ?string $model;
-    private ?int $timeout;
-    private string $api_url = 'https://api.openai.com/v1/chat/completions';
-    private ?bool $enable_logging;
+    private string $api_key;
+    private string $api_url;
+    private bool $enable_logging;
+    private string $model;
+    private float $temperature;
+    private int $timeout;
     
-    public function __construct(?string $api_key, ?string $model = 'gpt-4o-mini', ?int $timeout = 30, ?bool $enable_logging = false) {
+    public function __construct(string $api_key, string $model, string $api_url, int $timeout, bool $enable_logging, float $temperature) {
         $this->api_key = trim($api_key);
         $this->model = $model;
+        $this->api_url = $api_url;
         $this->timeout = $timeout;
         $this->enable_logging = $enable_logging;
+        $this->temperature = $temperature;
     }
     
     /**
@@ -106,13 +109,13 @@ class OpenAIClient {
     }
     
     /**
-     * Make HTTP request to OpenAI API
+     * Make HTTP request to AI API
      */
     private function makeRequest($messages) {
         $data = array(
             'model' => $this->model,
             'messages' => $messages,
-            'temperature' => 0.3,
+            'temperature' => $this->temperature,
             'response_format' => array('type' => 'json_object')
         );
         

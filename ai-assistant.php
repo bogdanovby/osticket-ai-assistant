@@ -5,7 +5,7 @@ require_once(INCLUDE_DIR . 'class.signal.php');
 require_once(INCLUDE_DIR . 'class.dispatcher.php');
 require_once(INCLUDE_DIR . 'class.json.php');
 require_once('config.php');
-require_once('class.openai.php');
+require_once('class.api-client.php');
 
 // --- ГЛОБАЛЬНЫЕ ФУНКЦИИ-ОБРАБОТЧИКИ ---
 
@@ -85,11 +85,11 @@ function ai_assistant_handle_suggest() {
         }
         require_once($analyzer_path);
         
-        if (!class_exists('TicketAnalyzer')) {
-            throw new Exception('Class TicketAnalyzer not found');
+        if (!class_exists('OsticketAIAssistantTicketAnalyzer')) {
+            throw new Exception('Class OsticketAIAssistantTicketAnalyzer not found');
         }
         
-        $analyzer = new TicketAnalyzer($config);
+        $analyzer = new OsticketAIAssistantTicketAnalyzer($config);
         $result = $analyzer->analyzeTicket($ticket_id);
         
         Http::response(200, json_encode($result), 'application/json');
@@ -148,7 +148,7 @@ function ai_assistant_handle_template() {
         if (!$config) $config = $plugin->getConfig();
         
         require_once(dirname(__FILE__) . '/class.analyzer.php');
-        $analyzer = new TicketAnalyzer($config);
+        $analyzer = new OsticketAIAssistantTicketAnalyzer($config);
         $template = $analyzer->getTemplate($template_id);
         
         if (!$template) {

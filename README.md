@@ -13,7 +13,7 @@ The AI Assistant plugin integrates OpenAI's GPT models into osTicket to assist s
 - **Context Aware**: Considers ticket priority and department.
 - **Language-Aware**: Detects the ticket language and prefers canned responses written in the same language (for example, distinguishing Russian and Ukrainian).
 - **One-Click Insertion**: Agents can preview the suggested response and insert it into the reply editor with a single click.
-- **Configurable**: Adjustable confidence threshold, max templates limit, and model selection (GPT-4o, GPT-3.5, etc.).
+- **Configurable**: Adjustable confidence threshold, max templates limit, and model selection (GPT-5.x, GPT-4.x, o-series reasoning models, etc.).
 
 ## Installation
 
@@ -30,20 +30,70 @@ The AI Assistant plugin integrates OpenAI's GPT models into osTicket to assist s
 
 Go to **Manage -> Plugins -> AI Assistant -> Config**.
 
-- **OpenAI API Key**: Your secret key starting with `sk-...` (required).
-- **OpenAI Model**: Select the model (e.g., `gpt-4o-mini` for speed/cost or `gpt-4o` for quality).
+- **API Provider**: Choose between OpenAI or Custom (for OpenAI-compatible APIs).
+- **API Key**: Your secret key starting with `sk-...` (required).
+- **API URL**: Custom endpoint URL (required for Custom provider, auto-filled for OpenAI).
+- **Model**: Select the model from the dropdown or enter a custom model name.
 - **Auto-suggest**: If enabled, analysis starts automatically when viewing a ticket.
 - **Minimum Confidence Score**: Threshold (0-100) to filter weak suggestions.
 - **Max Templates**: How many canned responses to send to AI for comparison (affects token usage).
+- **Timeout**: Maximum time (in seconds) to wait for API response.
+- **Temperature**: Advanced setting. Controls response randomness (0.0-2.0). Lower values produce more deterministic responses. Default: 0.3
+- **Enable Debug Logging**: Log API requests and responses for troubleshooting.
+
+### Available Open AI Models
+
+The plugin supports a wide range of OpenAI models. You can select from the dropdown or enter a custom model name for OpenAI-compatible APIs.
+
+**GPT-5 Series (Latest)**
+| Model | Description |
+|-------|-------------|
+| `gpt-5.2` | Latest model (Dec 2025), improved reasoning and speed |
+| `gpt-5.1` | Optimized for coding and agentic tasks |
+| `gpt-5.1-codex` | Specialized for code generation |
+| `gpt-5.1-codex-mini` | Compact version for coding |
+| `gpt-5.1-codex-max` | Project-scale coding tasks |
+| `gpt-5-mini` | Fast and cost-efficient, 400K context window |
+| `gpt-5-nano` | Fastest and cheapest in GPT-5 family |
+
+**Reasoning Models (o-series)**
+| Model | Description |
+|-------|-------------|
+| `o3` | Most advanced reasoning capabilities |
+| `o3-mini` | Cost-efficient reasoning |
+| `o4-mini` | Latest compact reasoning model |
+| `o1` | Extended reasoning |
+| `o1-mini` | Compact reasoning |
+
+**GPT-4.1 Series**
+| Model | Description |
+|-------|-------------|
+| `gpt-4.1` | Best for coding, supports 1M token context |
+| `gpt-4.1-mini` | Balanced performance and cost |
+| `gpt-4.1-nano` | Fastest in GPT-4.1 family |
+
+**GPT-4o Series (Multimodal)**
+| Model | Description |
+|-------|-------------|
+| `gpt-4o` | Multimodal, highly capable |
+| `gpt-4o-mini` | Fast and affordable (recommended default) |
+
+**Legacy Models**
+| Model | Description |
+|-------|-------------|
+| `gpt-4-turbo` | Previous generation |
+| `gpt-3.5-turbo` | Cheapest option |
+
+> **Note**: If API Key, Model, or API URL is not configured, the plugin will return an error when attempting to analyze tickets.
 
 ## Architecture
 
 ### Files
 - `plugin.php`: Entry point and metadata.
 - `ai-assistant.php`: Main plugin class (`AiAssistantPlugin`). Handles hooks, asset injection, and AJAX routing.
-- `config.php`: Configuration form definition (`AiAssistantConfig`).
-- `class.analyzer.php`: Core logic (`TicketAnalyzer`). Orchestrates data gathering and AI analysis.
-- `class.openai.php`: API client (`OpenAIClient`). Handles communication with OpenAI.
+- `config.php`: Configuration form definition (`AiAssistantConfig`). Contains model selection widget.
+- `class.analyzer.php`: Core logic (`OsticketAIAssistantTicketAnalyzer`). Orchestrates data gathering and AI analysis.
+- `class.api-client.php`: API client (`OsticketAIAssistantAPIClient`). Handles communication with OpenAI-compatible APIs.
 - `js/ai-assistant.js`: Frontend logic. Injects button, handles clicks, displays modal.
 - `css/ai-assistant.css`: Styles for the suggestion modal.
 
@@ -53,9 +103,9 @@ Go to **Manage -> Plugins -> AI Assistant -> Config**.
 3. **Request**: JS sends AJAX POST to `/scp/ajax.php/ai-assistant/suggest` with `ticket_id`.
 4. **Dispatch**: osTicket dispatcher routes request to `ai_assistant_handle_suggest` global function.
 5. **Analysis**:
-   - `TicketAnalyzer` fetches ticket data (subject, body).
+   - `OsticketAIAssistantTicketAnalyzer` fetches ticket data (subject, body).
    - It fetches active Canned Responses (global + department specific).
-   - `OpenAIClient` sends this data to ChatGPT with a prompt to find the best match.
+   - `OsticketAIAssistantAPIClient` sends this data to the AI API with a prompt to find the best match.
 6. **Response**: JSON with the best template ID and reasoning is returned.
 7. **UI**: JS shows a modal with the suggested response. User confirms to insert into editor.
 
