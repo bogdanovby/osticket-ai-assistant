@@ -18,12 +18,17 @@ class OsticketAIAssistantTicketAnalyzer {
         $api_url = $config->get('api_url');
         
         if ($api_key && $model && $api_url) {
+            $temperature = $config->get('temperature');
+            if ('' === trim((string)$temperature)) {
+                $temperature = 0.3;
+            }
             $this->apiClient = new OsticketAIAssistantAPIClient(
                 $api_key,
                 $model,
                 $api_url,
-                $config->get('timeout'),
-                $config->get('enable_logging')
+                (int) $config->get('timeout', 30),
+                (bool) $config->get('enable_logging', false),
+                (float) $temperature
             );
         }
     }

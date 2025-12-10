@@ -145,6 +145,16 @@ class AiAssistantConfig extends PluginConfig {
                 ),
                 'hint' => __('Maximum time to wait for OpenAI response')
             )),
+            'temperature' => new TextboxField(array(
+                'label' => __('Temperature'),
+                'default' => '0.3',
+                'required' => false,
+                'configuration' => array(
+                    'size' => 10,
+                    'length' => 4
+                ),
+                'hint' => __('Advanced: Controls response randomness (0.0-2.0). Lower = more deterministic. Default: 0.3')
+            )),
             'enable_logging' => new BooleanField(array(
                 'label' => __('Enable Debug Logging'),
                 'default' => false,
@@ -174,6 +184,14 @@ class AiAssistantConfig extends PluginConfig {
         if (empty($config['api_url'])) {
             $errors['api_url'] = __('API URL is required for Custom provider');
             $result = false;
+        }
+
+        if (isset($config['temperature'])) {
+            $config['temperature'] = (float) $config['temperature'];
+            if (0.0 > $config['temperature'] || $config['temperature'] > 2.0) {
+                $errors['temperature'] = __('Value is uot of range');
+                $result = false;
+            }
         }
 
         return $result;

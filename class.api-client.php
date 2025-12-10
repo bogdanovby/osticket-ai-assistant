@@ -6,18 +6,20 @@
  */
 class OsticketAIAssistantAPIClient {
     
-    private ?string $api_key;
-    private ?string $model;
-    private ?int $timeout;
+    private string $api_key;
+    private string $model;
+    private int $timeout;
     private string $api_url;
-    private ?bool $enable_logging;
+    private bool $enable_logging;
+    private float $temperature;
     
-    public function __construct(?string $api_key, ?string $model, ?string $api_url, ?int $timeout = 30, ?bool $enable_logging = false) {
+    public function __construct(string $api_key, string $model, string $api_url, int $timeout, bool $enable_logging, float $temperature) {
         $this->api_key = trim($api_key);
         $this->model = $model;
         $this->api_url = $api_url;
         $this->timeout = $timeout;
         $this->enable_logging = $enable_logging;
+        $this->temperature = $temperature;
     }
     
     /**
@@ -113,7 +115,7 @@ class OsticketAIAssistantAPIClient {
         $data = array(
             'model' => $this->model,
             'messages' => $messages,
-            'temperature' => 0.3,
+            'temperature' => $this->temperature,
             'response_format' => array('type' => 'json_object')
         );
         

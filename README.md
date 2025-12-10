@@ -38,6 +38,7 @@ Go to **Manage -> Plugins -> AI Assistant -> Config**.
 - **Minimum Confidence Score**: Threshold (0-100) to filter weak suggestions.
 - **Max Templates**: How many canned responses to send to AI for comparison (affects token usage).
 - **Timeout**: Maximum time (in seconds) to wait for API response.
+- **Temperature**: Advanced setting. Controls response randomness (0.0-2.0). Lower values produce more deterministic responses. Default: 0.3
 - **Enable Debug Logging**: Log API requests and responses for troubleshooting.
 
 ### Available Open AI Models
