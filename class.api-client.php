@@ -7,11 +7,11 @@
 class OsticketAIAssistantAPIClient {
     
     private string $api_key;
-    private string $model;
-    private int $timeout;
     private string $api_url;
     private bool $enable_logging;
+    private string $model;
     private float $temperature;
+    private int $timeout;
     
     public function __construct(string $api_key, string $model, string $api_url, int $timeout, bool $enable_logging, float $temperature) {
         $this->api_key = trim($api_key);
