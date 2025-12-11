@@ -61,7 +61,7 @@ class AIAssistantModelWidget extends Widget {
                placeholder="Enter model name (e.g., gpt-4o-mini)"
                style="width: 350px; padding: 5px;" />
 
-        <script type="text/javascript"><?php readfile(__DIR__ . '/js/config.js'); ?></script>
+        <script type="text/javascript"><?php readfile(__DIR__ . '/js/config-api-provider.js'); ?></script>
         <?php
     }
 }
