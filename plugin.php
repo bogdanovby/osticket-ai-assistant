@@ -2,7 +2,7 @@
 
 return array(
     'id' =>             'osticket:ai-assistant',
-    'version' =>        '1.2.0',
+    'version' =>        '1.2.1',
     'name' =>           'AI Assistant',
     'author' =>         'Pavel Bahdanau, Anatoly Melnikov',
     'description' =>    'AI-powered ticket response suggestions using OpenAI.',
