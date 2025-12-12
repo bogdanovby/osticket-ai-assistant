@@ -5,9 +5,9 @@
  * Ticket Analyzer
  * Analyzes tickets and finds best matching canned responses using AI
  */
-class OsticketAIAssistantTicketAnalyzer {
+class AIAssistantTicketAnalyzer {
     
-    private ?OsticketAIAssistantAPIClient $apiClient = null;
+    private ?AIAssistantAPIClient $apiClient = null;
     private AiAssistantConfig $config;
     
     public function __construct(\AiAssistantConfig  $config) {
@@ -22,7 +22,7 @@ class OsticketAIAssistantTicketAnalyzer {
             if ('' === trim((string)$temperature)) {
                 $temperature = 0.3;
             }
-            $this->apiClient = new OsticketAIAssistantAPIClient(
+            $this->apiClient = new AIAssistantAPIClient(
                 $api_key,
                 $model,
                 $api_url,

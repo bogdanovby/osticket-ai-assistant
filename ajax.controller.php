@@ -26,7 +26,7 @@ class AiAssistantAjaxController extends AjaxController {
             return $this->jsonResponse(array('success' => false, 'error' => 'Ticket ID required'));
         
         try {
-            $analyzer = new OsticketAIAssistantTicketAnalyzer($this->getConfig());
+            $analyzer = new AIAssistantTicketAnalyzer($this->getConfig());
             $result = $analyzer->analyzeTicket($ticket_id);
             return $this->jsonResponse($result);
         } catch (Exception $e) {
@@ -40,7 +40,7 @@ class AiAssistantAjaxController extends AjaxController {
             return $this->jsonResponse(array('success' => false, 'error' => 'Template ID required'));
         
         try {
-            $analyzer = new OsticketAIAssistantTicketAnalyzer($this->getConfig());
+            $analyzer = new AIAssistantTicketAnalyzer($this->getConfig());
             $template = $analyzer->getTemplate($template_id);
             if (!$template)
                 return $this->jsonResponse(array('success' => false, 'error' => 'Template not found'));
