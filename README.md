@@ -92,8 +92,8 @@ The plugin supports a wide range of OpenAI models. You can select from the dropd
 - `plugin.php`: Entry point and metadata.
 - `ai-assistant.php`: Main plugin class (`AiAssistantPlugin`). Handles hooks, asset injection, and AJAX routing.
 - `config.php`: Configuration form definition (`AiAssistantConfig`). Contains model selection widget.
-- `class.analyzer.php`: Core logic (`OsticketAIAssistantTicketAnalyzer`). Orchestrates data gathering and AI analysis.
-- `class.api-client.php`: API client (`OsticketAIAssistantAPIClient`). Handles communication with OpenAI-compatible APIs.
+- `class.analyzer.php`: Core logic (`AIAssistantTicketAnalyzer`). Orchestrates data gathering and AI analysis.
+- `class.api-client.php`: API client (`AIAssistantAPIClient`). Handles communication with OpenAI-compatible APIs.
 - `js/ai-assistant.js`: Frontend logic. Injects button, handles clicks, displays modal.
 - `css/ai-assistant.css`: Styles for the suggestion modal.
 
@@ -103,9 +103,9 @@ The plugin supports a wide range of OpenAI models. You can select from the dropd
 3. **Request**: JS sends AJAX POST to `/scp/ajax.php/ai-assistant/suggest` with `ticket_id`.
 4. **Dispatch**: osTicket dispatcher routes request to `ai_assistant_handle_suggest` global function.
 5. **Analysis**:
-   - `OsticketAIAssistantTicketAnalyzer` fetches ticket data (subject, body).
+   - `AIAssistantTicketAnalyzer` fetches ticket data (subject, body).
    - It fetches active Canned Responses (global + department specific).
-   - `OsticketAIAssistantAPIClient` sends this data to the AI API with a prompt to find the best match.
+   - `AIAssistantAPIClient` sends this data to the AI API with a prompt to find the best match.
 6. **Response**: JSON with the best template ID and reasoning is returned.
 7. **UI**: JS shows a modal with the suggested response. User confirms to insert into editor.
 

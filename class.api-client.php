@@ -4,7 +4,7 @@
  * AI API Client
  * Handles communication with OpenAI-compatible API
  */
-class OsticketAIAssistantAPIClient {
+class AIAssistantAPIClient {
     
     private string $api_key;
     private string $api_url;

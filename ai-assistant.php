@@ -85,11 +85,11 @@ function ai_assistant_handle_suggest() {
         }
         require_once($analyzer_path);
         
-        if (!class_exists('OsticketAIAssistantTicketAnalyzer')) {
-            throw new Exception('Class OsticketAIAssistantTicketAnalyzer not found');
+        if (!class_exists('AIAssistantTicketAnalyzer')) {
+            throw new Exception('Class AIAssistantTicketAnalyzer not found');
         }
         
-        $analyzer = new OsticketAIAssistantTicketAnalyzer($config);
+        $analyzer = new AIAssistantTicketAnalyzer($config);
         $result = $analyzer->analyzeTicket($ticket_id);
         
         Http::response(200, json_encode($result), 'application/json');
@@ -148,7 +148,7 @@ function ai_assistant_handle_template() {
         if (!$config) $config = $plugin->getConfig();
         
         require_once(dirname(__FILE__) . '/class.analyzer.php');
-        $analyzer = new OsticketAIAssistantTicketAnalyzer($config);
+        $analyzer = new AIAssistantTicketAnalyzer($config);
         $template = $analyzer->getTemplate($template_id);
         
         if (!$template) {
