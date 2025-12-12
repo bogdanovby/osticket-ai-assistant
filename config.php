@@ -87,7 +87,7 @@ class AiAssistantConfig extends PluginConfig {
                     'length' => 500,
                     'placeholder' => 'sk-...'
                 ),
-                'hint' => __('Your API key')
+                'hint' => __('Your API key. Get it for example from https://platform.openai.com/api-keys')
             )),
             'api_url' => new TextboxField(array(
                 'label' => __('API URL'),
@@ -189,7 +189,7 @@ class AiAssistantConfig extends PluginConfig {
         if (isset($config['temperature'])) {
             $config['temperature'] = (float) $config['temperature'];
             if (0.0 > $config['temperature'] || $config['temperature'] > 2.0) {
-                $errors['temperature'] = __('Value is uot of range');
+                $errors['temperature'] = __('Value is out of range');
                 $result = false;
             }
         }
